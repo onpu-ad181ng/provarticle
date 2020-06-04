@@ -8,8 +8,7 @@ from .similar_topics_finder import SimilarTopicsFinder
 from .article import Article
 
 class Recomender:
-  def __init__(self, history_manager, preferences_manager):
-    self.history_manager = history_manager
+  def __init__(self, preferences_manager):
     self.preferences_manager = preferences_manager
 
     self._text_extractor = TextExtractor()
@@ -18,11 +17,11 @@ class Recomender:
   def get_recomendation_articles(self, topics):
     all_topics = self._similar_topics_finder.add_similar_topics(topics, None)
     query = self._formulate_query(all_topics)
-    search_items = self._request_search(query)
+    search_items = self._request_search(query, topics)
     filtered_items = self._filter_blacklisted(search_items)
     items_with_word_count = self._get_word_count(filtered_items)
     reordered_items = self._reorder_by_less_popular_topics(items_with_word_count)
-    article_objects = self._create_article_objects(reordered_items)
+    return reordered_items
 
   def _get_word_count(self, items):
     items_with_time = items
@@ -34,20 +33,13 @@ class Recomender:
   def _reorder_by_less_popular_topics(self, items):
     return items
 
-  def _create_article_objects(self, search_items):
-    articles = []
-    for item in search_items:
-      article = Article(item['url'], item['title'], item['words'], item['reading_time'], self.history_manager)
-      articles.append(article)
-    return articles
-
   def _formulate_query(self, topics):
     quoted_topics = ['"' + topic + '"' for topic in topics]
     query_with_ors = ' OR '.join(quoted_topics)
     query = query_with_ors + ' guide'
     return query
 
-  def _request_search(self, query, pages=1):
+  def _request_search(self, query, topics, pages=1):
     """Returns list of search result items based on query
 
     :param query: search query, example: ""unity" OR "Unreal engine" guide"
@@ -76,7 +68,7 @@ class Recomender:
         link = anchors[0]['href']
         title = result.find('h3').text
 
-        topic_words = list({topic.text.lower() for topic in result.find_all('em')})
+        topic_words = list({topic.text.lower() for topic in result.find_all('em') if topic.text.lower() in topics})
 
         item = {
           'title': title,
@@ -91,9 +83,9 @@ class Recomender:
 
   def _filter_blacklisted(self, search_results):
     # TODO: remove empty list as the default blacklisted list
-    blacklisted = self.preferences_manager.get_blacklisted()
-    blacklisted = []
+    #blacklisted = self.preferences_manager.get_blacklisted()
+    blacklisted = ['books.google.com']
 
-    filtered_results = [item for item in search_results if item['url'] not in blacklisted]
+    filtered_results = [item for item in search_results if urlparse(item['url']).hostname not in blacklisted]
 
     return filtered_results

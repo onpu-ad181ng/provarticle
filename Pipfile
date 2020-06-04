@@ -10,6 +10,7 @@ beautifulsoup4 = "*"
 numpy = "*"
 requests = "*"
 pandas = "*"
+pyqt5 = "*"
 
 [requires]
 python_version = "3.7"

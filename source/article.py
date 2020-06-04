@@ -1,16 +1,11 @@
 class Article:
-  def __init__(self, url, name, topics, reading_time, history_manager, logo=None):
+  def __init__(self, article_id, rp_id, profile_id, is_rp,
+               url, name, reading_time, logo=None):
+    self.article_id = article_id
+    self.rp_id = rp_id
+    self.profile_id = profile_id
+    self.is_rp = is_rp
     self.url = url
     self.name = name
-    self.topics = topics
     self.reading_time = reading_time
-    self.history_manager = history_manager
     self.logo = logo
-
-    # turns topics into a single line
-    self.topics_text = ', '.join(self.topics)
-
-  def read(self):
-    self.history_manager.report_opened_article(self)
-
-    # TODO: open browser upon article being read

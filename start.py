@@ -1,21 +1,13 @@
-#from source.recomender import test
+import sys
 
-#results = test()
+from PyQt5 import QtWidgets
 
-#for result in results:
-#  print(result)
+from source.app import App
 
-import sqlite3 as sq
-import os
+app = QtWidgets.QApplication(sys.argv)
 
-from sqlite3 import Error as SqError
+mainWin = App()
+mainWin.show()
 
-from source.dao import DAO
-
-dao = DAO()
-
-dao.describe_db()
-#connection = sql_connection('prdb.db')
-#cursor = connection.cursor()
-
-print(1)
+app.exec_()
+del app
