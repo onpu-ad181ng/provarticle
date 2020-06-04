@@ -8,6 +8,7 @@ from PyQt5.uic import loadUi
 from .dao import DAO
 from .profile_manager import ProfileManager
 from .article_manager import ArticleManager
+from .preferences_manager import PreferencesManager
 from .recomender import Recomender
 
 from .ui_functions import *
@@ -43,20 +44,22 @@ class App(QMainWindow):
                                            self.next_reading_time,
                                            self.recomend_button,
                                            self._recommender)
+    self._preferences_mgr = PreferencesManager(self._dao, self.topics_list, self.topics_edit, self.topic_edit_btn)
     self._profile_manager = ProfileManager(self._dao, self.profiles_layout, self._article_manager,
-                                           self.profile_name, self.profile_desc, self.profile_box,
-                                           self.update_button)
+                                           self._preferences_mgr, self.profile_name, self.profile_desc,
+                                           self.update_button, self.delete_profile_btn)
 
 
   def _update_active_articles(self):
     self._article_manager.draw_articles()
     self._profile_manager.draw_profiles()
+    self._preferences_mgr.visualize_topics()
 
 
   def _init_profile(self):
     self._profile = self._profile_manager.initialize_profile()
-
     self._article_manager.profile = self._profile
+    self._preferences_mgr.profile = self._profile
 
 
   def _give_up_and_die(self, why):

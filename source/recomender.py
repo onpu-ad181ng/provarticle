@@ -82,10 +82,16 @@ class Recomender:
     return items
 
   def _filter_blacklisted(self, search_results):
-    # TODO: remove empty list as the default blacklisted list
+    # TODO: remove the default blacklisted list
     #blacklisted = self.preferences_manager.get_blacklisted()
     blacklisted = ['books.google.com']
 
-    filtered_results = [item for item in search_results if urlparse(item['url']).hostname not in blacklisted]
+    def check_blacklist_pass(url):
+      for bl in blacklisted:
+        if bl in url:
+          return False
+      return True
+
+    filtered_results = [item for item in search_results if check_blacklist_pass(urlparse(item['url']).hostname)]
 
     return filtered_results

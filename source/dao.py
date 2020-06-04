@@ -92,7 +92,7 @@ class DAO:
     return articles
 
 
-  def get_interests(self, profile_id):
+  def get_topics_text(self, profile_id):
     topics = pd.read_sql_query(
       'SELECT topic_text '
       'FROM topics '
@@ -104,7 +104,7 @@ class DAO:
 
 
   # creates new article and adds it to history and active articles
-  def create_new_article(self, rp_id, profile_id, is_rp, url, title, reading_time, logo, date):
+  def create_new_article(self, rp_id, profile_id, is_rp, url, title, reading_time, logo, date, article_topics):
     query = ('INSERT INTO articles(rp_id, profile_id, '
              'is_rp_article, url,title, reading_time, logo) '
              'VALUES({}, {}, {}, "{}", "{}", {}, "{}")'.format(
@@ -116,10 +116,37 @@ class DAO:
              'VALUES({}, "{}", 0, "1970-1-1")'.format(article_id, date))
     self._execute_write_query(query)
 
+    #topic_ids = []
+    # todo: MAKE IT ADD TO ARTICLE_TOPICS
+
     query = ('INSERT INTO active_articles(article_id) '
              'VALUES({})'.format(article_id))
     self._execute_write_query(query)
     return article_id
+
+
+  def delete_topic_by_text(self, topic_id):
+    self._execute_write_query('DELETE FROM topics '
+                              'WHERE topic_text = "{}"'.format(topic_id))
+    self._execute_write_query('DELETE FROM article_topics '
+                              'WHERE topic_text = "{}"'.format(topic_id))
+
+
+  def delete_profile_by_name(self, profile_name):
+    # todo: MAKE IT CLEAR UP RESIDUAL DATA
+    self._execute_write_query('DELETE FROM profiles '
+                              'WHERE name = "{}"'.format(profile_name))
+    #self._execute_write_query('DELETE FROM article_topics '
+    #                          'WHERE topic_text = "{}"'.format(topic_id))
+    #self._execute_write_query('DELETE FROM topics '
+    #                          'WHERE topic_text = "{}"'.format(topic_id))
+    #self._execute_write_query('DELETE FROM article_topics '
+    #                          'WHERE topic_text = "{}"'.format(topic_id))
+
+
+  def add_topic(self, profile_id, topic_text):
+    self._execute_write_query('INSERT INTO topics(profile_id, topic_text) '
+                              'VALUES({}, "{}")'.format(profile_id, topic_text))
 
 
   def update_profile_last_used_field(self, profile_id, date):

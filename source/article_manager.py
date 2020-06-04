@@ -38,7 +38,7 @@ class ArticleManager:
 
 
   def recommend_new(self, amount=3):
-    interests = self._dao.get_interests(self.profile.profile_id)
+    interests = self._dao.get_topics_text(self.profile.profile_id)
     new_articles_data = self._recommender.get_recomendation_articles(interests)
     new_articles_data = self._filter_recomended_articles(new_articles_data)
     new_articles_data = new_articles_data[:amount]
@@ -54,6 +54,7 @@ class ArticleManager:
                                                                            today_limit,
                                                                            sort=False)
 
+    # todo: MAKE IT NOT CONFUSE LINKS
     clear_layout(self._today_reading_layout)
     reading_time = 0
     for article in todays_articles:
@@ -92,7 +93,7 @@ class ArticleManager:
   def _create_new_normal_article(self, article_data):
     article_id = self._dao.create_new_article(0, self.profile.profile_id, False, article_data['url'],
                                               article_data['title'], article_data['reading_time'], '',
-                                              datetime.now().strftime("%Y-%m-%d %I:%M"))
+                                              datetime.now().strftime("%Y-%m-%d %I:%M"), article_data['topics'])
 
 
 
@@ -198,8 +199,8 @@ class ArticleManager:
     add_spacer(reading_time_layout)
     read_time = QLabel("{} minutes".format(article.reading_time))
     read_time.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTop)
-    read_time.setMaximumSize(50, 15)
-    read_time.setMinimumSize(50, 15)
+    read_time.setMaximumSize(100, 15)
+    read_time.setMinimumSize(100, 15)
     reading_time_layout.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTop)
     reading_time_layout.addWidget(read_time)
     reading_time_layout.addSpacerItem(QSpacerItem(1, 40, QSizePolicy.MinimumExpanding))
