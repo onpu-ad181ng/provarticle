@@ -20,6 +20,15 @@ def clear_layout(layout: QLayoutItem):
       clear_layout(item.layout())
 
 
+def cutoff_string(string, max_length):
+  if len(string) <= max_length:
+    return string
+
+  string = string[:max_length] + '...'
+  return string
+
+
+
 def clear_widget(widget: QWidget):
   widget.setParent(None)
 

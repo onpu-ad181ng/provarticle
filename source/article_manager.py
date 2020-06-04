@@ -7,7 +7,7 @@ from PyQt5 import QtCore
 
 from .dao import DAO
 from .article import Article
-from .ui_functions import clear_layout, add_spacer, clear_widget
+from .ui_functions import clear_layout, add_spacer, clear_widget, cutoff_string
 from .recomender import Recomender
 
 class ArticleManager:
@@ -180,13 +180,13 @@ class ArticleManager:
 
     title_and_url_layout = QVBoxLayout()
 
-    title = QLabel(article.name)
+    title = QLabel(cutoff_string(article.name, 30))
     title.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
     title.setMaximumSize(200, 20)
     title.setMinimumSize(200, 20)
     title_and_url_layout.addWidget(title)
 
-    url = QLabel(article.url)
+    url = QLabel(cutoff_string(article.url, 30))
     url.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom)
     url.setMaximumSize(200, 20)
     url.setMinimumSize(200, 20)
