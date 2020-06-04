@@ -34,6 +34,43 @@ class DAO:
     self.ready = True
 
 
+  def get_profiles(self):
+    profiles = pd.read_sql_query('Select * FROM profiles '
+                                 'ORDER BY name',
+                                 self._connection)
+    profile_data = profiles.to_dict('records')
+    return profile_data
+
+
+  def update_profile(self, old_name, new_name, desc):
+    self._execute_write_query('UPDATE profiles '
+                              'SET name = "{}", description = "{}" '
+                              'WHERE name = "{}"'
+                              .format(new_name, desc, old_name))
+  #def get_interests(self, profile_id):
+
+
+  def create_profile(self, name, desc, date_created):
+    self._execute_write_query('INSERT INTO profiles (name, description, date_created, date_last_used) '
+                              'VALUES("{}", "{}", "{}", "1970-1-1") '
+                              .format(name, desc, date_created))
+
+
+  def does_profile_name_exist(self, profile_name):
+    profiles = pd.read_sql_query('Select * FROM profiles '
+                                 'WHERE name = "{}"'.format(profile_name),
+                                 self._connection)
+    return len(profiles) > 0
+
+
+  def get_profile(self, profile_id):
+    profiles = pd.read_sql_query('Select * FROM profiles '
+                                 'WHERE profile_id = {}'.format(profile_id),
+                                 self._connection)
+    profile_data = profiles.to_dict('records')[0]
+    return profile_data
+
+
   def get_last_profile(self):
     profiles = pd.read_sql_query('Select * FROM profiles '
                                  'ORDER BY date_last_used DESC',
@@ -83,11 +120,6 @@ class DAO:
              'VALUES({})'.format(article_id))
     self._execute_write_query(query)
     return article_id
-
-
-  def add_to_history(self, article_id):
-    query = ('INSERT IN')
-    pass
 
 
   def update_profile_last_used_field(self, profile_id, date):
@@ -154,7 +186,7 @@ class DAO:
   def _init_test_data(self):
     self._cursor.execute('INSERT INTO profiles (profile_id, name, description, date_created, date_last_used)'
                          'VALUES('
-                         '0, "test profile", "test description", "2020-01-01", "2020-01-01")')
+                         '0, "test profile", "this is a test profile, generated automatically inside the code for the purposes of testing", "2020-01-01", "2020-01-01")')
 
     topics = ['unity', 'unreal engine', 'pathfinding']
     for i, topic in enumerate(topics):

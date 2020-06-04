@@ -31,7 +31,7 @@ class ArticleManager:
     self._recomend_button.pressed.connect(self.recommend_new)
 
 
-  def draw_active_articles(self):
+  def draw_articles(self):
     self._load_active_articles()
 
     self.draw_normal_recomendations()
@@ -45,14 +45,14 @@ class ArticleManager:
 
     for data in new_articles_data:
       self._create_new_normal_article(data)
-    self.draw_active_articles()
+    self.draw_articles()
 
 
   def draw_normal_recomendations(self):
     today_limit = 15
     todays_articles, later_articles = self._split_today_and_later_articles(self.normal_articles,
                                                                            today_limit,
-                                                                           sort=True)
+                                                                           sort=False)
 
     clear_layout(self._today_reading_layout)
     reading_time = 0

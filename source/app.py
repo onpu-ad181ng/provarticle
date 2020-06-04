@@ -35,7 +35,6 @@ class App(QMainWindow):
     self._dao = DAO()
     self._dao.connect_to_db(always_init_db=True, init_with_test=True)
 
-    self._profile_manager = ProfileManager(self._dao)
     self._recommender = Recomender(None)
     self._article_manager = ArticleManager(self._dao,
                                            self.today_recommended_layout,
@@ -44,10 +43,14 @@ class App(QMainWindow):
                                            self.next_reading_time,
                                            self.recomend_button,
                                            self._recommender)
+    self._profile_manager = ProfileManager(self._dao, self.profiles_layout, self._article_manager,
+                                           self.profile_name, self.profile_desc, self.profile_box,
+                                           self.update_button)
 
 
   def _update_active_articles(self):
-    self._article_manager.draw_active_articles()
+    self._article_manager.draw_articles()
+    self._profile_manager.draw_profiles()
 
 
   def _init_profile(self):
@@ -66,7 +69,8 @@ class App(QMainWindow):
     loadUi('ui.ui', self)
 
     self.today_recommended_layout = QVBoxLayout()
-    self.today_widget = QWidget()
+    self.today_widget = QFrame()
+    #self.today_widget.setStyleSheet("border:1px solid rgb(0, 0, 0);")
     self.today_widget.setLayout(self.today_recommended_layout)
     self.today_recommended_scroller.setWidget(self.today_widget)
 
@@ -74,4 +78,9 @@ class App(QMainWindow):
     self.next_widget = QWidget()
     self.next_widget.setLayout(self.next_recommended_layout)
     self.next_recommended_scroller.setWidget(self.next_widget)
+
+    self.profiles_layout = QVBoxLayout()
+    self.profiles_widget = QFrame()
+    self.profiles_widget.setLayout(self.profiles_layout)
+    self.profiles_scroller.setWidget(self.profiles_widget)
 
