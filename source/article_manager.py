@@ -181,16 +181,16 @@ class ArticleManager:
 
     title_and_url_layout = QVBoxLayout()
 
-    title = QLabel(cutoff_string(article.name, 30))
+    title = QLabel(cutoff_string(article.name, 50))
     title.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-    title.setMaximumSize(200, 20)
-    title.setMinimumSize(200, 20)
+    title.setMaximumSize(270, 20)
+    title.setMinimumSize(270, 20)
     title_and_url_layout.addWidget(title)
 
-    url = QLabel(cutoff_string(article.url, 30))
+    url = QLabel(cutoff_string(article.url, 50))
     url.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom)
-    url.setMaximumSize(200, 20)
-    url.setMinimumSize(200, 20)
+    url.setMaximumSize(270, 20)
+    url.setMinimumSize(270, 20)
     title_and_url_layout.addWidget(url)
 
     title_and_url_layout.addSpacerItem(QSpacerItem(40, 40, QSizePolicy.MinimumExpanding))
